@@ -1,0 +1,24 @@
+# CLK
+set_io              clk         21
+
+# Reset
+set_io  -pullup yes rst_btn     62
+
+# PMOD I/O
+set_io  -pullup yes display[0]  78
+set_io  -pullup yes display[1]  79
+set_io  -pullup yes display[2]  80
+set_io  -pullup yes display[3]  81
+set_io  -pullup yes display[4]  87
+set_io  -pullup yes display[5]  88
+set_io  -pullup yes display[6]  90
+set_io  -pullup yes display[7]  91
+
+# Digit select I/O
+set_io  -pullup yes digit[0]    48
+set_io  -pullup yes digit[1]    47
+set_io  -pullup yes digit[2]    45
+set_io  -pullup yes digit[3]    44
+
+# LED
+set_io              led         95
