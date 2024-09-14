@@ -2,18 +2,19 @@ module controller(
     input           clk,
     input           rst,
     input   [3:0]   opcode,
-    output  [12:0]  out
+    output  [13:0]  out
 );
 
     localparam OP_LDA = 4'b0000;
     localparam OP_ADD = 4'b0001;
     localparam OP_SUB = 4'b0010;
     localparam OP_STA = 4'b0011;
+    localparam OP_JMP = 4'b0100;
     localparam OP_HLT = 4'b1111;
 
     reg [2:0] stage;
 
-    reg hlt, pc_inc, pc_en, mar_load, mem_st, mem_en, ir_load, ir_en, 
+    reg hlt, pc_inc, pc_load, pc_en, mar_load, mem_st, mem_en, ir_load, ir_en, 
         a_load, a_en, b_load, adder_sub, adder_en;
 
     always @(negedge clk or posedge rst) begin
@@ -28,7 +29,7 @@ module controller(
     end
 
     always @(*) begin
-        {hlt, pc_inc, pc_en, mar_load, mem_st, mem_en, ir_load, ir_en, 
+        {hlt, pc_inc, pc_load, pc_en, mar_load, mem_st, mem_en, ir_load, ir_en, 
          a_load, a_en, b_load, adder_sub, adder_en} = 13'b0;
 
         case (stage)
@@ -48,6 +49,10 @@ module controller(
                     OP_LDA, OP_ADD, OP_SUB, OP_STA: begin
                         ir_en = 1;
                         mar_load = 1;
+                    end
+                    OP_JMP: begin
+                        ir_en = 1;
+                        pc_load = 1;
                     end
                     OP_HLT: begin
                         hlt = 1;
@@ -90,6 +95,7 @@ module controller(
     assign out = {
         hlt, 
         pc_inc, 
+        pc_load,
         pc_en,
         mar_load, 
         mem_st,

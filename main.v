@@ -44,12 +44,15 @@ module main(
 
 
     wire pc_inc;
+    wire pc_load;
     wire pc_en;
     wire    [7:0]   pc_out;  
     pc pc(
         .clk(cpu_clk),
         .rst(rst),
         .inc(pc_inc),
+        .load(pc_load),
+        .bus(bus),
         .out(pc_out)
     );
 
@@ -116,6 +119,7 @@ module main(
         {
             hlt,
             pc_inc,
+            pc_load,
             pc_en,
             mar_load,
             mem_st,
