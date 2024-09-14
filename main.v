@@ -103,7 +103,7 @@ module main(
     wire ir_load;
     wire ir_en;
     wire    [7:0]   ir_out;
-    ir ir(
+    register ir(
         .clk(cpu_clk),
         .rst(rst),
         .load(ir_load),
