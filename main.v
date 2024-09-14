@@ -54,12 +54,14 @@ module main(
     );
 
     wire mar_load;
+    wire mem_st;
     wire mem_en;
     wire    [7:0]   mem_out;
     memory mem(
         .clk(cpu_clk),
         .rst(rst),
         .load(mar_load),
+        .store(mem_st),
         .bus(bus),
         .out(mem_out)
     );
@@ -116,6 +118,7 @@ module main(
             pc_inc,
             pc_en,
             mar_load,
+            mem_st,
             mem_en,
             ir_load,
             ir_en,
@@ -131,7 +134,7 @@ module main(
         .display_pins(display), 
         .select_digit(digit), 
         .clk(clk), 
-        .number(a_out)
+        .number({8'b0, a_out})
     );
 
 endmodule

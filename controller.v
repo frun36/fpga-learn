@@ -2,17 +2,18 @@ module controller(
     input           clk,
     input           rst,
     input   [3:0]   opcode,
-    output  [11:0]  out
+    output  [12:0]  out
 );
 
     localparam OP_LDA = 4'b0000;
     localparam OP_ADD = 4'b0001;
     localparam OP_SUB = 4'b0010;
+    localparam OP_STA = 4'b0011;
     localparam OP_HLT = 4'b1111;
 
     reg [2:0] stage;
 
-    reg hlt, pc_inc, pc_en, mar_load, mem_en, ir_load, ir_en, 
+    reg hlt, pc_inc, pc_en, mar_load, mem_st, mem_en, ir_load, ir_en, 
         a_load, a_en, b_load, adder_sub, adder_en;
 
     always @(negedge clk or posedge rst) begin
@@ -27,8 +28,8 @@ module controller(
     end
 
     always @(*) begin
-        {hlt, pc_inc, pc_en, mar_load, mem_en, ir_load, ir_en, 
-         a_load, a_en, b_load, adder_sub, adder_en} = 12'b0;
+        {hlt, pc_inc, pc_en, mar_load, mem_st, mem_en, ir_load, ir_en, 
+         a_load, a_en, b_load, adder_sub, adder_en} = 13'b0;
 
         case (stage)
             0: begin
@@ -44,15 +45,7 @@ module controller(
             end
             3: begin
                 case (opcode)
-                    OP_LDA: begin
-                        ir_en = 1;
-                        mar_load = 1;
-                    end
-                    OP_ADD: begin
-                        ir_en = 1;
-                        mar_load = 1;
-                    end
-                    OP_SUB: begin
+                    OP_LDA, OP_ADD, OP_SUB, OP_STA: begin
                         ir_en = 1;
                         mar_load = 1;
                     end
@@ -67,13 +60,13 @@ module controller(
                         mem_en = 1;
                         a_load = 1;
                     end
-                    OP_ADD: begin
+                    OP_ADD, OP_SUB: begin
                         mem_en = 1;
                         b_load = 1;
                     end
-                    OP_SUB: begin
-                        mem_en = 1;
-                        b_load = 1;
+                    OP_STA: begin
+                        a_en = 1;
+                        mem_st = 1;
                     end
                 endcase
             end
@@ -99,6 +92,7 @@ module controller(
         pc_inc, 
         pc_en,
         mar_load, 
+        mem_st,
         mem_en, 
         ir_load, 
         ir_en, 
