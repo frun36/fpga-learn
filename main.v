@@ -28,7 +28,7 @@ module main(
     reg		[7:0]	bus;
     always @(*) begin
         if (ir_en) begin
-            bus = ir_out;
+            bus = ir_addr_out;
         end else if (adder_en) begin
             bus = adder_out;
         end else if (a_en) begin
@@ -102,13 +102,15 @@ module main(
 
     wire ir_load;
     wire ir_en;
-    wire    [7:0]   ir_out;
-    register ir(
+    wire    [3:0]   ir_instr_out;
+    wire    [3:0]   ir_addr_out;
+    ir ir (
         .clk(cpu_clk),
         .rst(rst),
         .load(ir_load),
         .bus(bus),
-        .out(ir_out)
+        .instr_out(ir_instr_out),
+        .addr_out(ir_addr_out)
     );
 
     wire out_load;
@@ -124,7 +126,7 @@ module main(
     controller controller(
         .clk(cpu_clk),
         .rst(rst),
-        .opcode(ir_out[7:4]),
+        .opcode(ir_instr_out),
         .out(
         {
             hlt,

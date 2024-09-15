@@ -10,7 +10,8 @@ module controller(
     localparam OP_ADD = 4'b0010;
     localparam OP_SUB = 4'b0011;
     localparam OP_STA = 4'b0100;
-    localparam OP_JMP = 4'b0101;
+    localparam OP_LDI = 4'b0101;
+    localparam OP_JMP = 4'b0110;
     localparam OP_OUT = 4'b1110;
     localparam OP_HLT = 4'b1111;
 
@@ -51,6 +52,10 @@ module controller(
                     OP_LDA, OP_ADD, OP_SUB, OP_STA: begin
                         ir_en = 1;
                         mar_load = 1;
+                    end
+                    OP_LDI: begin
+                        ir_en = 1;
+                        a_load = 1;
                     end
                     OP_JMP: begin
                         ir_en = 1;
