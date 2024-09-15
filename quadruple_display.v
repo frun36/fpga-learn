@@ -1,28 +1,34 @@
 module quadruple_display(
-    output  [7:0] display_pins,
-    output reg [3:0] select_digit,
+    input               clk,
+    input               rst,
+    input       [15:0]  number,
+    input       [3:0]   dp,
+    input       [3:0]   digit_mask,
 
-    input clk,
-    input [15:0] number
+
+    output reg  [3:0]   select_digit,
+    output      [7:0]   display_pins
 );
-    reg [3:0] digit;
-    reg [1:0] counter;
-
-    reg rst = 0;
+    reg [3:0]   digit;
+    reg [1:0]   counter;
+    reg         curr_dp;
 
     wire slow_clk;
-
     clock_divider #(.MODULO(120)) cd(.clk(clk), .rst(rst), .out(slow_clk));
 
-    display dis(.display_pins(display_pins), .digit(digit));
+    display dis(
+        .digit(digit),
+        .dp(curr_dp),
+        .display_pins(display_pins) 
+    );
 
-    always @(posedge slow_clk) counter <= counter + 1;
+    always @(posedge slow_clk) 
+        counter <= counter + 1;
 
-    always @(counter) begin
-        select_digit = 4'b0000 + (1 << counter);
-    end
+    always @(*)
+        select_digit = (4'b0000 + (1 << counter)) & digit_mask;
 
-    always @(counter) begin
+    always @(*) begin
         case (counter)
             2'b00: digit = number[3:0];
             2'b01: digit = number[7:4];
@@ -30,4 +36,8 @@ module quadruple_display(
             2'b11: digit = number[15:12];
         endcase
     end
+
+    always @(*)
+        curr_dp = dp[counter];
+
 endmodule

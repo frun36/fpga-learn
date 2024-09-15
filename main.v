@@ -147,11 +147,16 @@ module main(
         })
     );
 
+    reg [3:0] digit_mask = 4'b0011;
+    reg [3:0] dp = 4'b0000;
     quadruple_display dis(
-        .display_pins(display), 
-        .select_digit(digit), 
         .clk(clk), 
-        .number({8'b0, out_out})
+        .rst(rst),
+        .number({8'b0, out_out}),
+        .dp(dp),
+        .digit_mask(digit_mask),
+        .select_digit(digit), 
+        .display_pins(display), 
     );
 
 endmodule
