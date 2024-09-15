@@ -5,11 +5,12 @@ module controller(
     output  [13:0]  out
 );
 
-    localparam OP_LDA = 4'b0000;
-    localparam OP_ADD = 4'b0001;
-    localparam OP_SUB = 4'b0010;
-    localparam OP_STA = 4'b0011;
-    localparam OP_JMP = 4'b0100;
+    localparam OP_NOP = 4'b0000;
+    localparam OP_LDA = 4'b0001;
+    localparam OP_ADD = 4'b0010;
+    localparam OP_SUB = 4'b0011;
+    localparam OP_STA = 4'b0100;
+    localparam OP_JMP = 4'b0101;
     localparam OP_HLT = 4'b1111;
 
     reg [2:0] stage;
