@@ -111,6 +111,16 @@ module main(
         .out(ir_out)
     );
 
+    wire out_load;
+    wire    [7:0]   out_out;
+    register out(
+        .clk(cpu_clk),
+        .rst(rst),
+        .load(out_load),
+        .bus(bus),
+        .out(out_out)
+    );
+
     controller controller(
         .clk(cpu_clk),
         .rst(rst),
@@ -130,7 +140,8 @@ module main(
             a_en,
             b_load,
             adder_sub,
-            adder_en
+            adder_en,
+            out_load
         })
     );
 
@@ -138,7 +149,7 @@ module main(
         .display_pins(display), 
         .select_digit(digit), 
         .clk(clk), 
-        .number({8'b0, a_out})
+        .number({8'b0, out_out})
     );
 
 endmodule
