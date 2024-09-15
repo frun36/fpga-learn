@@ -11,7 +11,7 @@ module memory(
     reg     [7:0]   ram [0:15];
 
     initial begin
-	    $readmemh("program.bin", ram);
+	    $readmemh("program.mem", ram);
     end
 
     always @(posedge clk or posedge rst) begin
