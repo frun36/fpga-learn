@@ -4,7 +4,9 @@ module main(
 
     output  [7:0]   display,
     output  [3:0]   digit,
-    output          led
+    output          led,
+    output          cf_led,
+    output          zf_led
 );
     wire rst;
     assign rst = ~rst_btn;
@@ -23,7 +25,7 @@ module main(
         .hlt(hlt),
         .out(cpu_clk)
     );
-    assign led = cpu_clk;
+    assign {led, cf_led, zf_led} = {cpu_clk, flags_cf, flags_zf};
 
     reg		[7:0]	bus;
     always @(*) begin
@@ -92,12 +94,16 @@ module main(
 
     wire adder_sub;
     wire adder_en;
+    wire adder_cf;
+    wire adder_zf;
     wire    [7:0]   adder_out;
     adder adder(
         .a(a_out),
         .b(b_out),
         .sub(adder_sub),
-        .out(adder_out)
+        .out(adder_out),
+        .cf(adder_cf),
+        .zf(adder_zf)
     );
 
     wire ir_load;
@@ -123,9 +129,23 @@ module main(
         .out(out_out)
     );
 
+    wire flags_load;
+    wire flags_cf;
+    wire flags_zf;
+    flags flags(
+        .clk(cpu_clk),
+        .rst(rst),
+        .load(flags_load),
+        .cf_in(adder_cf),
+        .zf_in(adder_zf),
+        .cf_out(flags_cf),
+        .zf_out(flags_zf)
+    );
+
     controller controller(
         .clk(cpu_clk),
         .rst(rst),
+        .flags({flags_cf, flags_zf}),
         .opcode(ir_instr_out),
         .out(
         {
@@ -143,6 +163,7 @@ module main(
             b_load,
             adder_sub,
             adder_en,
+            flags_load,
             out_load
         })
     );

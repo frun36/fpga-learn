@@ -10,6 +10,8 @@ The current instruction set is:
 - `SUB = 3` - add value from register B from A
 - `STA = 4` - store A at specified address in memory
 - `LDI = 5` - load specified value (4b) to A
-- `JMP = 6` - jumps to specified address
+- `JMP = 6` - jump to specified address
+- `JC  = 7` - jump if carry flag is set
+- `JZ  = 8` - jump if zero flag is set
 - `OUT = E` - store A in OUT register (display)
 - `HLT = F` - halts the processor

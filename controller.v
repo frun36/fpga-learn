@@ -1,8 +1,9 @@
 module controller(
     input           clk,
     input           rst,
+    input   [1:0]   flags,
     input   [3:0]   opcode,
-    output  [14:0]  out
+    output  [15:0]  out
 );
 
     localparam OP_NOP = 4'b0000;
@@ -12,13 +13,15 @@ module controller(
     localparam OP_STA = 4'b0100;
     localparam OP_LDI = 4'b0101;
     localparam OP_JMP = 4'b0110;
+    localparam OP_JC  = 4'b0111;
+    localparam OP_JZ  = 4'b1000;
     localparam OP_OUT = 4'b1110;
     localparam OP_HLT = 4'b1111;
 
     reg [2:0] stage;
 
     reg hlt, pc_inc, pc_load, pc_en, mar_load, mem_st, mem_en, ir_load, ir_en, 
-        a_load, a_en, b_load, adder_sub, adder_en, out_load;
+        a_load, a_en, b_load, adder_sub, adder_en, flags_load, out_load;
 
     always @(negedge clk or posedge rst) begin
         if (rst)
@@ -33,7 +36,7 @@ module controller(
 
     always @(*) begin
         {hlt, pc_inc, pc_load, pc_en, mar_load, mem_st, mem_en, ir_load, ir_en, 
-         a_load, a_en, b_load, adder_sub, adder_en, out_load} = 14'b0;
+         a_load, a_en, b_load, adder_sub, adder_en, flags_load, out_load} = 15'b0;
 
         case (stage)
             0: begin
@@ -60,6 +63,18 @@ module controller(
                     OP_JMP: begin
                         ir_en = 1;
                         pc_load = 1;
+                    end
+                    OP_JC: begin
+                        if (flags[1]) begin
+                            ir_en = 1;
+                            pc_load = 1;
+                        end
+                    end
+                    OP_JZ: begin
+                        if (flags[0]) begin
+                            ir_en = 1;
+                            pc_load = 1;
+                        end
                     end
                     OP_OUT: begin
                         a_en = 1;
@@ -91,11 +106,13 @@ module controller(
                     OP_ADD: begin
                         adder_en = 1;
                         a_load = 1;
+                        flags_load = 1;
                     end
                     OP_SUB: begin
                         adder_sub = 1;
                         adder_en = 1;
                         a_load = 1;
+                        flags_load = 1;
                     end
                 endcase
             end
@@ -118,6 +135,7 @@ module controller(
         b_load,
         adder_sub,
         adder_en,
+        flags_load,
         out_load
     };
 

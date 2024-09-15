@@ -21,4 +21,6 @@ set_io  -pullup yes digit[2]    45
 set_io  -pullup yes digit[3]    44
 
 # LED
-set_io              led         95
+set_io              led         95 # CLK
+set_io              cf_led      99 # CF
+set_io              zf_led      97 # ZF
